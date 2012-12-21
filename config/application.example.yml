@@ -9,7 +9,11 @@
 #
 GMAIL_USERNAME: Your_Username
 GMAIL_PASSWORD: Your_Password
-ADMIN_NAME: First User
+ADMIN_FIRST_NAME: First
+ADMIN_LAST_NAME: User
 ADMIN_EMAIL: user@example.com
 ADMIN_PASSWORD: please
-ROLES: [admin, user, VIP]
+ROLES: [admin, silver, gold, platinum]
+RECURLY_API_KEY: = recurly_api_key
+RECURLY_JS_PRIVATE_KEY: = recurly_js_private_key
+RECURLY_SUBDOMAIN: myapp
