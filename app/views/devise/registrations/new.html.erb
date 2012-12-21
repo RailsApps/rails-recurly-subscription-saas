@@ -1,5 +1,6 @@
 <h2>Sign up</h2>
-<%= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => {:class => 'card_form form-vertical' }) do |f| %>
+<div id="card_error" class="alert alert-error" style="display:none" ></div>
+<%= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => {:class => 'card_form form-vertical', 'data-subdomain' => RECURLY_SUBDOMAIN, 'data-signature' => @signature, 'data-ip_address' => request.remote_ip}) do |f| %>
   <h3><%= params[:plan].titleize if params[:plan] %> Subscription Plan</h3>
   <%= f.error_notification %>
   <%= display_base_errors resource %>
@@ -10,5 +11,31 @@
   <%= f.input :email, :required => true %>
   <%= f.input :password, :required => true %>
   <%= f.input :password_confirmation, :required => true %>
+  <% if @user.card_token %>
+    <p>Credit card acceptance is pending.</p>
+  <% else %>
+    <div class="field">
+      <%= label_tag :country, "Country" %>
+      <%= select_tag 'country', country_options_for_select(selected = 'US', priority_countries = 'US') %>
+    </div>
+    <div class="field">
+      <%= label_tag :card_number, "Credit Card Number" %>
+      <%= text_field_tag :card_number, nil, name: nil %>
+    </div>
+    <div class="field">
+      <%= label_tag :card_code, "Card Security Code (CVV)" %>
+      <%= text_field_tag :card_code, nil, name: nil %>
+    </div>
+    <div class="field">
+      <%= label_tag :card_month, "Card Expiration" %>
+      <%= select_month nil, {add_month_numbers: true}, {name: nil, id: "card_month"}%>
+      <%= select_year nil, {start_year: Date.today.year, end_year: Date.today.year+10}, {name: nil, id: "card_year"}%>
+    </div>
+    <div class="field">
+      <%= label_tag :coupon, "Promotional Coupon (if any)" %>
+      <%= text_field_tag :coupon, nil, name: nil %>
+    </div>
+  <% end %>
+  <%= f.hidden_field :card_token %>
   <%= f.button :submit, 'Sign up', :class => 'btn-primary' %>
 <% end %>
