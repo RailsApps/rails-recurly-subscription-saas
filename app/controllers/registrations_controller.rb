@@ -10,6 +10,17 @@ class RegistrationsController < Devise::RegistrationsController
     end
   end
 
+  def update_plan
+    @user = current_user
+    role = Role.find(params[:user][:role_ids]) unless params[:user][:role_ids].nil?
+    if @user.update_plan(role)
+      redirect_to edit_user_registration_path, :notice => 'Updated plan.'
+    else
+      flash.alert = 'Unable to update plan.'
+      render :edit
+    end
+  end
+
   private
   def build_resource(*args)
     super
