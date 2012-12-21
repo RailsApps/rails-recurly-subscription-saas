@@ -1,4 +1,6 @@
 RailsRecurlySubscriptionSaas::Application.routes.draw do
+  get "recurly/test"
+  post "recurly/push"
   get "content/gold"
   get "content/silver"
   get "content/platinum"

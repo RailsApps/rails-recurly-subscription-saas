@@ -32,7 +32,22 @@ class User < ActiveRecord::Base
       subscription = customer.subscriptions.first
       subscription.update_attributes! :timeframe => 'now', :plan_code => role.name
     end
+    true
   rescue Recurly::Resource::Invalid => e
+    logger.error e.message
+    errors.add :base, "Unable to update your subscription. #{e.message}"
+    false
+  end
+
+  def update_recurly
+    customer = Recurly::Account.find(customer_id) unless customer_id.nil?
+    unless customer.nil?
+      customer.email = email
+      customer.first_name = first_name
+      customer.last_name = last_name
+      customer.save!
+    end
+  rescue Recurly::Resource::NotFound => e
     logger.error e.message
     errors.add :base, "Unable to update your subscription. #{e.message}"
     false
@@ -52,4 +67,9 @@ class User < ActiveRecord::Base
     false
   end
 
+  def expire
+    UserMailer.expire_email(self).deliver
+    destroy
+  end
+  
 end
