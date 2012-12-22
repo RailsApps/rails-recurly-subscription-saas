@@ -12,7 +12,7 @@ function createObject(o) {
 var Recurly = {};
 
 $('.registrations.new').ready(function() {
-  
+
   Recurly.settings = {
     enableGeoIP: true
   , acceptedCards: ['american_express', 'discover', 'mastercard', 'visa']
@@ -107,9 +107,9 @@ $('.registrations.new').ready(function() {
 
       totals.stages.now = totals.plan.add(totals.allAddOns);
 
-      // FREE TRIAL 
+      // FREE TRIAL
       if(this.plan.trial) {
-        totals.stages.now = Recurly.Cost.FREE; 
+        totals.stages.now = Recurly.Cost.FREE;
       }
 
       // COUPON
@@ -135,7 +135,7 @@ $('.registrations.new').ready(function() {
     }
   , redeemAddOn: function(addOn) {
     var redemption = addOn.createRedemption();
-    this.addOns.push(redemption); 
+    this.addOns.push(redemption);
     return redemption;
   }
 
