@@ -14,7 +14,7 @@ ADMIN_LAST_NAME: User
 ADMIN_EMAIL: user@example.com
 ADMIN_PASSWORD: please
 ROLES: [admin, silver, gold, platinum]
-# RECURLY_API_KEY: = recurly_api_key
-# RECURLY_JS_PRIVATE_KEY: = recurly_js_private_key
-# RECURLY_SUBDOMAIN: myapp
+RECURLY_API_KEY: = recurly_api_key
+RECURLY_JS_PRIVATE_KEY: = recurly_js_private_key
+RECURLY_SUBDOMAIN: myapp
 
