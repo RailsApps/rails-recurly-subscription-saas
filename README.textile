@@ -117,7 +117,7 @@ You'll see a prompt:
 <pre>
 question  Install an example application?
       1)  I want to build my own application
-      2)  rails-recurly-subscription-saas
+      2)  membership/subscription/saas
       3)  rails-prelaunch-signup
       4)  rails3-bootstrap-devise-cancan
       5)  rails3-devise-rspec-cucumber
@@ -126,7 +126,15 @@ question  Install an example application?
       8)  rails3-subdomains
 </pre>
 
-Choose *rails-recurly-subscription-saas*. The Rails Composer tool may give you other options (other choices may have been added since these notes were written).
+Choose *membership/subscription/saas*.
+
+Then choose *Recurly*:
+
+<pre>
+question  Billing with Stripe or Recurly?
+      1)  Stripe
+      2)  Recurly
+</pre>
 
 The application generator template will ask you for additional preferences:
 
