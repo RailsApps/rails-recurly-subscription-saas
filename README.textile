@@ -68,6 +68,7 @@ h4. Other Projects
 
 * Recurly's "recurly-client-ruby-demo":https://github.com/recurly/recurly-client-ruby-demo
 * Recurly's "recurly-client-ruby":https://github.com/recurly/recurly-client-ruby
+* Nick O'Neill's "recurly-rails":https://github.com/biznickman/recurly-rails
 
 h2. Dependencies
 
