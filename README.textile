@@ -441,6 +441,7 @@ $ rake assets:precompile
 $ git add -A
 $ git commit -m "assets compiled for Heroku"
 $ git push heroku master
+</pre>
 
 You'll need to set the configuration values from the *config/application.yml* file as Heroku environment variables. See the article "Rails Environment Variables":http://railsapps.github.com/rails-environment-variables.html for more information.
 
