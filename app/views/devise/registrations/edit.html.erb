@@ -15,13 +15,13 @@
 <h3>Card</h3>
 <p>
   Need to use a different credit card?
-  <a href="https://<%= RECURLY_SUBDOMAIN %>.recurly.com/" class="btn btn-mini" type="button">Change card</a>
+  <%= link_to "Change Card", "https://<%= RECURLY_SUBDOMAIN %>.recurly.com/", class: "btn btn-mini" %>
 </p>
 
 <h3>Subscription Plan</h3>
 <p>
   <%= @user.roles.first.name.titleize %>
-  <a data-toggle="modal" href="#plan-options" class="btn btn-mini" type="button">Change plan</a>
+  <%= link_to "Change plan", "#plan-options", class: "btn btn-mini", data: {toggle: "modal"} %>
 </p>
 
 <h3>Cancel my account</h3>
@@ -31,7 +31,7 @@
 <div id="plan-options" class="modal" style="display: none;">
   <%= simple_form_for resource, :as => resource_name, :url => update_plan_path, :html => {:method => :put, :class => 'form-horizontal' } do |f| %>
     <div class="modal-header">
-      <a class="close" data-dismiss="modal">&#215;</a>
+      <%= link_to "&#215;".html_safe, "#", class: "close", data: {dismiss: "modal"} %>
       <h3>Change Plan</h3>
     </div>
     <div class="modal-body">
@@ -39,7 +39,7 @@
     </div>
     <div class="modal-footer">
       <%= f.submit "Change Plan", :class => "btn btn-primary" %>
-      <a class="btn" data-dismiss="modal" href="#">Close</a>
+      <%= link_to "Close", "#", class: "btn", data: {dismiss: "modal"} %>
     </div>
   <% end %>
 </div>
