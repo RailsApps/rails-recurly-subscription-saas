@@ -1,15 +1,15 @@
 <h2>Account</h2>
 <div id="card_error" class="alert alert-error" style="display:none" ></div>
-<%= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put, :class => 'form-vertical' }) do |f| %>
+<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: 'form-vertical' }) do |f| %>
   <%= f.error_notification %>
   <%= display_base_errors resource %>
-  <%= f.input :first_name, :autofocus => true %>
+  <%= f.input :first_name, autofocus: true %>
   <%= f.input :last_name %>
-  <%= f.input :email, :required => true %>
-  <%= f.input :password, :autocomplete => "off", :hint => "leave it blank if you don't want to change it", :required => false %>
-  <%= f.input :password_confirmation, :required => false %>
-  <%= f.input :current_password, :hint => "we need your current password to confirm your changes", :required => true %>
-  <%= f.button :submit, 'Update', :class => 'btn-primary' %>
+  <%= f.input :email, required: true %>
+  <%= f.input :password, autocomplete: "off", hint: "leave it blank if you don't want to change it", required: false %>
+  <%= f.input :password_confirmation, required: false %>
+  <%= f.input :current_password, hint: "we need your current password to confirm your changes", required: true %>
+  <%= f.button :submit, 'Update', class: 'btn-primary' %>
 <% end %>
 
 <h3>Card</h3>
@@ -26,19 +26,19 @@
 
 <h3>Cancel my account</h3>
 
-<p>Unhappy? <%= link_to "Cancel my account", registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete, :class => 'btn btn-mini' %></p>
+<p>Unhappy? <%= link_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-mini' %></p>
 
 <div id="plan-options" class="modal" style="display: none;">
-  <%= simple_form_for resource, :as => resource_name, :url => update_plan_path, :html => {:method => :put, :class => 'form-horizontal' } do |f| %>
+  <%= simple_form_for resource, as: resource_name, url: update_plan_path, html: {method: :put, class: 'form-horizontal' } do |f| %>
     <div class="modal-header">
       <%= link_to "&#215;".html_safe, "#", class: "close", data: {dismiss: "modal"} %>
       <h3>Change Plan</h3>
     </div>
     <div class="modal-body">
-      <%= f.input :role_ids, :collection => Role.all.delete_if {|i| i.name == 'admin'}, :as => :radio_buttons, :label_method => lambda {|t| t.name.titleize}, :label => false, :item_wrapper_class => 'inline' %>
+      <%= f.input :role_ids, collection: Role.all.delete_if {|i| i.name == 'admin'}, as: :radio_buttons, label_method: lambda {|t| t.name.titleize}, label: false, item_wrapper_class: 'inline', checked: resource.role_ids.first %>
     </div>
     <div class="modal-footer">
-      <%= f.submit "Change Plan", :class => "btn btn-primary" %>
+      <%= f.submit "Change Plan", class: "btn btn-primary" %>
       <%= link_to "Close", "#", class: "btn", data: {dismiss: "modal"} %>
     </div>
   <% end %>
