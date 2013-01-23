@@ -354,9 +354,11 @@ If you're not operating with US dollars as your currency, you can change the def
 
 h3. Prepare Your Recurly Account
 
-Before we can submit a billing request to Recurly, we have to set up our subscription plans in Recurly.
+Before we can submit a billing request to Recurly, we have to set up our Recurly account.
 
-We'll tell Recurly that we have three plans named "Silver", "Gold", and "Platinum" that will be billed monthly at rates of $9, $19, and $29. Once a customer is created and assigned a plan, Recurly will do all the work of notifying the user, initiating monthly billing, and contacting the user when a credit card is declined or expires.
+First, take a look at "Site Settings" in your Recurly account profile. Recurly offers options for "Address Requirement." By default, Recurly expects a full address, including street, city, state and postal code. Our example application only asks for the user's country (for enhanced fraud protection). Change the "Address Requirement" setting to "No Address." If you don't change the "Address Requirement" setting from the default, you'll see an error when you test the application: "Billing info address1 can't be empty, Billing info zip can't be empty, Billing info city can't be empty, Billing info state can't be empty."
+
+Next we'll set up our subscription plans. We'll tell Recurly that we have three plans named "Silver", "Gold", and "Platinum" that will be billed monthly at rates of $9, $19, and $29. Once a customer is created and assigned a plan, Recurly will do all the work of notifying the user, initiating monthly billing, and contacting the user when a credit card is declined or expires.
 
 Go to your Recurly account profile to create a subscription plan. Look for "Configuration/Subscription Plans." Recurly offers "documentation about creating subscriptions":https://docs.recurly.com/subscriptions and "additional detail about subscriptions":https://docs.recurly.com/api/subscriptions.
 
