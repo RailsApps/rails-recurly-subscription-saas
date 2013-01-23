@@ -12,7 +12,7 @@ GMAIL_PASSWORD: Your_Password
 ADMIN_FIRST_NAME: First
 ADMIN_LAST_NAME: User
 ADMIN_EMAIL: user@example.com
-ADMIN_PASSWORD: please
+ADMIN_PASSWORD: changeme
 ROLES: [admin, silver, gold, platinum]
 RECURLY_API_KEY: = recurly_api_key
 RECURLY_JS_PRIVATE_KEY: = recurly_js_private_key
