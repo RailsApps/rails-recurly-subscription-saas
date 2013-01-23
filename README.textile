@@ -264,7 +264,7 @@ GMAIL_PASSWORD: Your_Password
 ADMIN_FIRST_NAME: First
 ADMIN_LAST_NAME: User
 ADMIN_EMAIL: user@example.com
-ADMIN_PASSWORD: please
+ADMIN_PASSWORD: changeme
 ROLES: [admin, silver, gold, platinum]
 RECURLY_API_KEY: = recurly_api_key
 RECURLY_JS_PRIVATE_KEY: = recurly_js_private_key
@@ -299,11 +299,11 @@ puts 'DEFAULT USERS'
 user = User.find_or_create_by_email :first_name => ENV['ADMIN_FIRST_NAME'].dup, :last_name => ENV['ADMIN_LAST_NAME'].dup, :email => ENV['ADMIN_EMAIL'].dup, :password => ENV['ADMIN_PASSWORD'].dup, :password_confirmation => ENV['ADMIN_PASSWORD'].dup
 puts 'user: ' << user.name
 user.add_role :admin
-user2 = User.find_or_create_by_email :first_name => 'Silver', :last_name => 'User', :email => 'user2@example.com', :password => 'please', :password_confirmation => 'please'
+user2 = User.find_or_create_by_email :first_name => 'Silver', :last_name => 'User', :email => 'user2@example.com', :password => 'changeme', :password_confirmation => 'changeme'
 user2.add_role :silver
-user3 = User.find_or_create_by_email :first_name => 'Gold', :last_name => 'User', :email => 'user3@example.com', :password => 'please', :password_confirmation => 'please'
+user3 = User.find_or_create_by_email :first_name => 'Gold', :last_name => 'User', :email => 'user3@example.com', :password => 'changeme', :password_confirmation => 'changeme'
 user3.add_role :gold
-user4 = User.find_or_create_by_email :first_name => 'Platinum', :last_name => 'User', :email => 'user4@example.com', :password => 'please', :password_confirmation => 'please'
+user4 = User.find_or_create_by_email :first_name => 'Platinum', :last_name => 'User', :email => 'user4@example.com', :password => 'changeme', :password_confirmation => 'changeme'
 user4.add_role :platinum
 puts "users: #{user2.name}, #{user3.name}, #{user4.name}"
 </pre>
@@ -385,10 +385,18 @@ h3. Change your Application's Secret Token
 
 If you've used the Rails Composer tool to generate the application, the application's secret token will be unique, just as with any Rails application generated with the @rails new@ command.
 
-However, if you've cloned the application directly from GitHub, it is crucial that you change the application's secret token before deploying your application in production mode. Otherwise, people could change their session information, and potentially access your SaaS or membership site as a premium user or administrator. Your secret token should be at least 30 characters long and completely random. Edit your *config/initializers/secret_token.rb* file:
+However, if you've cloned the application directly from GitHub, it is crucial that you change the application's secret token before deploying your application in production mode. Otherwise, people could change their session information, and potentially access your SaaS or membership site as a premium user or administrator. Your secret token should be at least 30 characters long and completely random.
+
+Get a unique secret token:
 
 <pre>
-RailsRecurlySubscriptionSaas::Application.config.secret_token = '...some really long, random string...'
+rake secret
+</pre>
+
+Edit your *config/initializers/secret_token.rb* file to add the secret token:
+
+<pre>
+Rails3BootstrapDeviseCancan::Application.config.secret_token = '...some really long, random string...'
 </pre>
 
 h2. Test the App
@@ -402,7 +410,7 @@ To see your application in action, open a browser window and navigate to "http:/
 If you are using the default values from the *config/application.yml* file, you can sign in as the administrator using:
 
 * email: user@example.com
-* password: please
+* password: changeme
 
 You'll see a navigation link for Admin. Clicking the link will display a page with a list of users at
 "http://localhost:3000/users":http://localhost:3000/users.
@@ -410,7 +418,7 @@ You'll see a navigation link for Admin. Clicking the link will display a page wi
 To sign in as the second user, use
 
 * email: user2@example.com
-* password: please
+* password: changeme
 
 The second user will not see the Admin navigation link and will not be able to access the page at
 "http://localhost:3000/users":http://localhost:3000/users.
@@ -427,6 +435,39 @@ For your convenience, here is a "Tutorial for Rails on Heroku":http://railsapps.
 
 Be sure to set up SSL before you make your application available in production. See the "Heroku documentation on SSL":https://devcenter.heroku.com/articles/ssl.
 
+Prior to deployment, change your *db/seeds.rb* file. Remove the "example.com" sample users.
+
+<pre>
+puts 'ROLES'
+YAML.load(ENV['ROLES']).each do |role|
+  Role.find_or_create_by_name({ :name => role }, :without_protection => true)
+  puts 'role: ' << role
+end
+puts 'DEFAULT USERS'
+user = User.find_or_create_by_email :name => ENV['ADMIN_NAME'].dup, :email => ENV['ADMIN_EMAIL'].dup, :password => ENV['ADMIN_PASSWORD'].dup, :password_confirmation => ENV['ADMIN_PASSWORD'].dup
+puts 'user: ' << user.name
+user.add_role :admin
+</pre>
+
+You'll need to set the configuration values from the *config/application.yml* file as Heroku environment variables. See the article "Rails Environment Variables":http://railsapps.github.com/rails-environment-variables.html for more information.
+
+With the figaro gem, just run:
+
+<pre>
+rake figaro:heroku
+</pre>
+
+Alternatively, you can set Heroku environment variables directly with @heroku config:add@.
+
+<pre>
+$ heroku config:add GMAIL_USERNAME='myname@gmail.com' GMAIL_PASSWORD='secret'
+$ heroku config:add 'ROLES=[admin, silver, gold, platinum]'
+$ heroku config:add ADMIN_FIRST_NAME='First' ADMIN_LAST_NAME='User' ADMIN_EMAIL='user@example.com' ADMIN_PASSWORD='changeme'
+$ heroku config:add RECURLY_API_KEY=secret RECURLY_JS_PRIVATE_KEY=secret RECURLY_SUBDOMAIN=mydomain
+</pre>
+
+Prepare your application assets for Heroku.
+
 Add this configuration parameter to the *config/application.rb* file:
 
 <pre>
@@ -441,41 +482,6 @@ $ rake assets:precompile
 $ git add -A
 $ git commit -m "assets compiled for Heroku"
 $ git push heroku master
-</pre>
-
-You'll need to set the configuration values from the *config/application.yml* file as Heroku environment variables. See the article "Rails Environment Variables":http://railsapps.github.com/rails-environment-variables.html for more information.
-
-With the figaro gem, just run:
-
-<pre>
-rake figaro:heroku
-</pre>
-
-Alternatively, you can set Heroku environment variables directly.
-
-The figaro gem version 0.5.0 has a bug and can't run @rake figaro:heroku@.
-
-Set environment variables directly on Heroku with @heroku config:add@.
-
-<pre>
-$ heroku config:add GMAIL_USERNAME='myname@gmail.com' GMAIL_PASSWORD='secret'
-$ heroku config:add 'ROLES=[admin, silver, gold, platinum]'
-$ heroku config:add ADMIN_FIRST_NAME='First' ADMIN_LAST_NAME='User' ADMIN_EMAIL='user@example.com' ADMIN_PASSWORD='please'
-$ heroku config:add RECURLY_API_KEY=secret RECURLY_JS_PRIVATE_KEY=secret RECURLY_SUBDOMAIN=mydomain
-</pre>
-
-Prior to deployment, change your *db/seeds.rb* file. Remove the "example.com" sample users.
-
-<pre>
-puts 'ROLES'
-YAML.load(ENV['ROLES']).each do |role|
-  Role.find_or_create_by_name({ :name => role }, :without_protection => true)
-  puts 'role: ' << role
-end
-puts 'DEFAULT USERS'
-user = User.find_or_create_by_email :name => ENV['ADMIN_NAME'].dup, :email => ENV['ADMIN_EMAIL'].dup, :password => ENV['ADMIN_PASSWORD'].dup, :password_confirmation => ENV['ADMIN_PASSWORD'].dup
-puts 'user: ' << user.name
-user.add_role :admin
 </pre>
 
 Complete Heroku deployment with:
