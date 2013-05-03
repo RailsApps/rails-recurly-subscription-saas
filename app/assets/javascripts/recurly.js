@@ -20,7 +20,7 @@ $('.registrations.new').ready(function() {
   , baseURL: 'https://api.recurly.com/jsonp/' + $('#new_user').data('subdomain') + '/'
   };
 
-  Recurly.version = '2.1.3';
+  Recurly.version = '2.1.8';
 
   Recurly.ajax = function(options) {
     options.data = $.extend({js_version: Recurly.version}, options.data);
