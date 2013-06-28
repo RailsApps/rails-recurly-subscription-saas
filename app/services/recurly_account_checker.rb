@@ -12,7 +12,6 @@ class RecurlyAccountChecker
   def cancel_subscription
     handle_recurly_exception do 
       if customer_exists?
-        subscription = customer.subscription.first
         subscription.cancel if !subscription.nil? && subscription.state == 'active'
       end
     end
@@ -33,13 +32,10 @@ class RecurlyAccountChecker
     handle_recurly_exception do
       user.role_ids = []
       user.add_role role.name
-      if customer_exists?
-        subscription = customer.subscriptions.first
-        subscription.update_attributes! :timeframe => 'now', :plan_code => role.name
-      end
-      true
+      subscription.update_attributes! :timeframe => 'now', :plan_code => role.name if customer_exists?
     end
   end
+
 
   def customer
     @customer ||= retrieve_customer
@@ -48,6 +44,10 @@ class RecurlyAccountChecker
   private
   def customer_id
     user.customer_id 
+  end
+
+  def subscription
+    @subscription ||= customer.subscriptions.first
   end
 
   def user_customer_id_exists?
