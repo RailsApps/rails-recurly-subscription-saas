@@ -9,6 +9,15 @@ class RecurlyAccountChecker
     !customer.nil?
   end
 
+  def cancel_subscription
+    handle_recurly_exception do 
+      if customer_exists?
+        subscription = customer.subscription.first
+        subscription.cancel if !subscription.nil? && subscription.state == 'active'
+      end
+    end
+  end
+
   def update_customer 
     handle_recurly_exception do 
       if customer_exists?

@@ -29,15 +29,7 @@ class User < ActiveRecord::Base
   end
 
   def cancel_subscription
-    customer = Recurly::Account.find(customer_id) unless customer_id.nil?
-    subscription = customer.subscriptions.first unless customer.nil?
-    if (!subscription.nil?) && (subscription.state == 'active')
-      subscription.cancel
-    end
-  rescue Recurly::Resource::NotFound => e
-    logger.error e.message
-    errors.add :base, "Unable to cancel your subscription. #{e.message}"
-    false
+    recurly_account_checker.cancel_subscription
   end
 
   def expire
