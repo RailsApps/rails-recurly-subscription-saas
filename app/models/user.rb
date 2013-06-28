@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+    :recoverable, :rememberable, :trackable, :validatable
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :first_name, :last_name, :email, :password, :password_confirmation, :remember_me, :card_token, :customer_id
@@ -17,17 +17,13 @@ class User < ActiveRecord::Base
   end
 
   def check_recurly
-    customer = Recurly::Account.find(customer_id) unless customer_id.nil?
-  rescue Recurly::Resource::NotFound => e
-    logger.error e.message
-    errors.add :base, "Unable to create your subscription. #{e.message}"
-    false
+    RecurlyAccountChecker.customer_exists?(customer_id)
   end
 
   def update_plan(role)
+    customer = Recurly::Account.find(customer_id) unless customer_id.nil?
     self.role_ids = []
     self.add_role(role.name)
-    customer = Recurly::Account.find(customer_id) unless customer_id.nil?
     unless customer.nil?
       subscription = customer.subscriptions.first
       subscription.update_attributes! :timeframe => 'now', :plan_code => role.name
@@ -54,12 +50,10 @@ class User < ActiveRecord::Base
   end
 
   def cancel_subscription
-    unless customer_id.nil?
-      customer = Recurly::Account.find(customer_id)
-      subscription = customer.subscriptions.first unless customer.nil?
-      if (!subscription.nil?) && (subscription.state == 'active')
-        subscription.cancel
-      end
+    customer = Recurly::Account.find(customer_id) unless customer_id.nil?
+    subscription = customer.subscriptions.first unless customer.nil?
+    if (!subscription.nil?) && (subscription.state == 'active')
+      subscription.cancel
     end
   rescue Recurly::Resource::NotFound => e
     logger.error e.message
