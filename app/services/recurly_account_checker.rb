@@ -9,6 +9,17 @@ class RecurlyAccountChecker
     !customer.nil?
   end
 
+  def update_customer 
+    handle_recurly_exception do 
+      if customer_exists?
+        customer.email = user.email
+        customer.first_name = user.first_name
+        customer.last_name = user.last_name
+        customer.save!
+      end
+    end
+  end
+
   def update_subscriber(role)
     handle_recurly_exception do
       user.role_ids = []

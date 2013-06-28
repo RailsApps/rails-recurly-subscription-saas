@@ -25,17 +25,7 @@ class User < ActiveRecord::Base
   end
 
   def update_recurly
-    customer = Recurly::Account.find(customer_id) unless customer_id.nil?
-    unless customer.nil?
-      customer.email = email
-      customer.first_name = first_name
-      customer.last_name = last_name
-      customer.save!
-    end
-  rescue Recurly::Resource::NotFound => e
-    logger.error e.message
-    errors.add :base, "Unable to update your subscription. #{e.message}"
-    false
+    recurly_account_checker.update_customer
   end
 
   def cancel_subscription
