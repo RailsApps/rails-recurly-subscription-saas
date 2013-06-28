@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe User do
+  let(:account_checker) { stub }
 
   before(:each) do
     @attr = {
@@ -10,10 +11,14 @@ describe User do
       :password => "changeme",
       :password_confirmation => "changeme"
     }
+    account_checker.stub(:customer_exists?) { true }
   end
 
   it "should create a new instance given a valid attribute" do
-    User.create!(@attr)
+    u = User.new(@attr)
+    u.stub(:recurly_account_checker) {  account_checker }
+
+    u.should be_valid
   end
 
   it "should require an email address" do
@@ -38,14 +43,18 @@ describe User do
   end
 
   it "should reject duplicate email addresses" do
-    User.create!(@attr)
+    u = User.new(@attr)
+    u.stub(:recurly_account_checker) { account_checker }
+    u.save
     user_with_duplicate_email = User.new(@attr)
     user_with_duplicate_email.should_not be_valid
   end
 
   it "should reject email addresses identical up to case" do
     upcased_email = @attr[:email].upcase
-    User.create!(@attr.merge(:email => upcased_email))
+    u = User.new(@attr.merge(:email => upcased_email))
+    u.stub(:recurly_account_checker) { account_checker }
+    u.save
     user_with_duplicate_email = User.new(@attr)
     user_with_duplicate_email.should_not be_valid
   end
@@ -88,7 +97,7 @@ describe User do
   describe "password encryption" do
 
     before(:each) do
-      @user = User.create!(@attr)
+      @user = User.new(@attr)
     end
 
     it "should have an encrypted password attribute" do
@@ -104,7 +113,7 @@ describe User do
   describe "expire" do
 
     before(:each) do
-      @user = User.create!(@attr)
+      @user = User.new(@attr)
     end
 
     it "sends an email to user" do
@@ -116,9 +125,9 @@ describe User do
 
   describe "#update_plan" do
     before do
-      @user = FactoryGirl.create(:user, email: "test@example.com")
-      @role1 = FactoryGirl.create(:role, name: "silver")
-      @role2 = FactoryGirl.create(:role, name: "gold")
+      @user = FactoryGirl.build(:user, email: "test@example.com")
+      @role1 = FactoryGirl.build(:role, name: "silver")
+      @role2 = FactoryGirl.build(:role, name: "gold")
       @user.add_role(@role1.name)
     end
 
@@ -130,6 +139,7 @@ describe User do
 
     it "wont remove original role from database" do
       @user.update_plan(@role2)
+      @user.stub(:recurly_account_checker) { account_checker }
       Role.all.count.should == 2
     end
   end

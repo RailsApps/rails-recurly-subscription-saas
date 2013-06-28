@@ -17,22 +17,11 @@ class User < ActiveRecord::Base
   end
 
   def check_recurly
-    RecurlyAccountChecker.customer_exists?(customer_id)
+    recurly_account_checker.customer_exists?
   end
 
   def update_plan(role)
-    customer = Recurly::Account.find(customer_id) unless customer_id.nil?
-    self.role_ids = []
-    self.add_role(role.name)
-    unless customer.nil?
-      subscription = customer.subscriptions.first
-      subscription.update_attributes! :timeframe => 'now', :plan_code => role.name
-    end
-    true
-  rescue Recurly::Resource::Invalid => e
-    logger.error e.message
-    errors.add :base, "Unable to update your subscription. #{e.message}"
-    false
+    recurly_account_checker.update_subscriber(role)
   end
 
   def update_recurly
@@ -64,6 +53,11 @@ class User < ActiveRecord::Base
   def expire
     UserMailer.expire_email(self).deliver
     destroy
+  end
+
+  private
+  def recurly_account_checker
+    RecurlyAccountChecker.new(self)
   end
 
 end
