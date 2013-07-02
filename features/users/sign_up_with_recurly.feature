@@ -53,7 +53,7 @@ Feature: User signs up with Recurly
     And I select "2016" as the "year"
     When I press "Sign up"
     Then I should be on the new silver user registration page
-    And I should see "Billing info verification value must be three or four digits"
+    And I should see "Billing info verification value must be three digits"
 
     @javascript
     Scenario: With declined card
@@ -69,6 +69,6 @@ Feature: User signs up with Recurly
       And I select "2016" as the "year"
       When I press "Sign up"
       Then I should be on the new silver user registration page
-      And I should see "The transaction was declined"
+      And I should see "Your card was declined"
 
 
