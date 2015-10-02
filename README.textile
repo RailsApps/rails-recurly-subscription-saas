@@ -7,8 +7,6 @@ Rails 3.2 example application with recurring billing using Recurly. Use for a Ra
 * "Twitter Bootstrap":http://twitter.github.com/bootstrap/ front-end framework for CSS styling
 * "Recurly":https://recurly.com/ for recurring billing and subscription management
 
-Best of all, there's a "detailed tutorial":https://tutorials.railsapps.org/rails-recurly-subscription-saas to show how it's built.
-
 You can build this application in only a few minutes using the "Rails Composer":http://railsapps.github.io/rails-composer/ tool.
 
 !http://railsapps.github.io/images/rails-recurly-subscription-saas.png(Rails Application for a Membership, Subscription, or SaaS Site)!
@@ -16,16 +14,6 @@ You can build this application in only a few minutes using the "Rails Composer":
 h2. !http://twitter-badges.s3.amazonaws.com/t_logo-a.png(Follow on Twitter)!:http://www.twitter.com/rails_apps Follow on Twitter
 
 Follow the project on Twitter: "@rails_apps":http://twitter.com/rails_apps. Please tweet some praise if you like what you've found.
-
-h2. Tutorial
-
-An in-depth tutorial is available (subscription required). Subscriptions provide financial support for the RailsApps project.
-
-You can use the starter app without getting the tutorial. The tutorial provides a detailed explanation of the code:
-
-h4. "Get the Tutorial":https://tutorials.railsapps.org/rails-recurly-subscription-saas
-
-The tutorial documents each step to follow to create the application. Every step is documented concisely, so a complete beginner can create this application without any additional knowledge. However, no explanation is offered for any of the steps, so if you are a beginner, you’re advised to look for an introduction to Rails elsewhere. See a list of recommended resources for "Rails":http://railsapps.github.io/rails.html.
 
 h2. What Is Implemented -- and What Is Not
 
