@@ -17,10 +17,10 @@ $('.registrations.new').ready(function() {
     enableGeoIP: true
   , acceptedCards: ['american_express', 'discover', 'mastercard', 'visa']
   , oneErrorPerField: true
-  , baseURL: 'https://api.recurly.com/jsonp/' + $('#new_user').data('subdomain') + '/'
+  , baseURL: 'https://' + $('#new_user').data('subdomain') + 'api.recurly.com/jsonp/' + $('#new_user').data('subdomain') + '/'
   };
 
-  Recurly.version = '2.1.8';
+  Recurly.version = '2.2.4';
 
   Recurly.ajax = function(options) {
     options.data = $.extend({js_version: Recurly.version}, options.data);
@@ -115,7 +115,16 @@ $('.registrations.new').ready(function() {
       // COUPON
       if(this.coupon) {
         var beforeDiscount = totals.stages.now;
-        var afterDiscount = totals.stages.now.discount(this.coupon);
+        var discount;
+          if(this.coupon.discountFixed)
+            discount = this.coupon.discountFixed;
+          else
+            discount = beforeDiscount.sub(this.plan.setupFee || 0).mult(this.coupon.discountRatio);
+        var afterDiscount = beforeDiscount.sub(discount);
+          if(afterDiscount.cents() < 0) {
+            afterDiscount = Recurly.Cost.FREE;
+          }
+
         totals.coupon = afterDiscount.sub(beforeDiscount);
         totals.stages.now = afterDiscount;
       }
