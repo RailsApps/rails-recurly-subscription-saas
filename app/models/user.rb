@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+    :recoverable, :rememberable, :trackable, :validatable
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :first_name, :last_name, :email, :password, :password_confirmation, :remember_me, :card_token, :customer_id
@@ -17,59 +17,29 @@ class User < ActiveRecord::Base
   end
 
   def check_recurly
-    customer = Recurly::Account.find(customer_id) unless customer_id.nil?
-  rescue Recurly::Resource::NotFound => e
-    logger.error e.message
-    errors.add :base, "Unable to create your subscription. #{e.message}"
-    false
+    recurly_account_checker.customer_exists?
   end
 
   def update_plan(role)
-    self.role_ids = []
-    self.add_role(role.name)
-    customer = Recurly::Account.find(customer_id) unless customer_id.nil?
-    unless customer.nil?
-      subscription = customer.subscriptions.first
-      subscription.update_attributes! :timeframe => 'now', :plan_code => role.name
-    end
-    true
-  rescue Recurly::Resource::Invalid => e
-    logger.error e.message
-    errors.add :base, "Unable to update your subscription. #{e.message}"
-    false
+    recurly_account_checker.update_subscriber(role)
   end
 
   def update_recurly
-    customer = Recurly::Account.find(customer_id) unless customer_id.nil?
-    unless customer.nil?
-      customer.email = email
-      customer.first_name = first_name
-      customer.last_name = last_name
-      customer.save!
-    end
-  rescue Recurly::Resource::NotFound => e
-    logger.error e.message
-    errors.add :base, "Unable to update your subscription. #{e.message}"
-    false
+    recurly_account_checker.update_customer
   end
 
   def cancel_subscription
-    unless customer_id.nil?
-      customer = Recurly::Account.find(customer_id)
-      subscription = customer.subscriptions.first unless customer.nil?
-      if (!subscription.nil?) && (subscription.state == 'active')
-        subscription.cancel
-      end
-    end
-  rescue Recurly::Resource::NotFound => e
-    logger.error e.message
-    errors.add :base, "Unable to cancel your subscription. #{e.message}"
-    false
+    recurly_account_checker.cancel_subscription
   end
 
   def expire
     UserMailer.expire_email(self).deliver
     destroy
+  end
+
+  private
+  def recurly_account_checker
+    RecurlyAccountChecker.new(self)
   end
 
 end
